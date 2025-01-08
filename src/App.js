@@ -5,7 +5,7 @@ import L from 'leaflet';
 //import geodata from './india_district_states.json';   //contains all state and district border
 import geodata1 from './india_district.json';           // contains all state borders
 import geodata2 from './State.json';               //Karnataka state border
-import geodata3 from './District.json';            //District border
+//import geodata3 from './District.json';            //District border
 import geodata4 from './Taluk.json';               //Taluk border
 import styles from './my_styles.module.css';
 import fetchWeather from './weatherApi';  // Import the fetchWeather function
@@ -13,8 +13,8 @@ import DistrictDropdown from './DistrictDropdown'; // Importing the DistrictDrop
 import districtsData from './District.json';  // Import the districts GeoJSON
 import HeatMap from './heat_map'; // Import the HeatMap component
 import talukData from './Taluk.json'; // Taluk data
-import HeatMap1 from './heat_map1'; // Import the HeatMap component
-
+//import HeatMap1 from './heat_map1'; // Import the HeatMap component
+import geodata3 from './District_shp.json';            //District border conveted from shp to json file
 
 
 
@@ -133,7 +133,7 @@ const MyMap = () => {
       setHighlightedDistrict(selectedDistrict); // Highlight the district on the map
       const center = selectedDistrict.geometry.coordinates[0][0][0]; // Assuming it's a polygon and the center is the first coordinate
       setPosition([center[1], center[0]]);
-      setZoomLevel(8); // Zoom in on the district
+      setZoomLevel(8.5); // Zoom in on the district
     }
 
   //  Now filter taluks based on the selected district ID
@@ -252,9 +252,9 @@ const getTalukStyle = (feature) => {
     // Apply style to the selected Taluk
     return {
       fillColor: 'green', // Color for the selected Taluk
-      weight: 3,           // Thicker border for the selected Taluk
+      weight: 1,           // Thicker border for the selected Taluk
       opacity: 1,
-      dashArray: '1',   
+      dashArray: '0',   
       color: 'black',      // Border color
       fillOpacity: 0.5,    // Semi-transparent fill
     };
