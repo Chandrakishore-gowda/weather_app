@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import talukData from './Taluk1.json'; // Assuming this contains all taluk data
-import districtsData from './District.json';  // Adjust the path according to your file location
+// import talukData from './Taluk1.json'; // Assuming this contains all taluk data
+// import districtsData from './District.json';  // Adjust the path according to your file location
+import talukData from './Taluk_shp.json'; // Assuming this contains all taluk data
+import districtsData from './District_shp.json';  // Adjust the path according to your file location
+
 
 const DistrictDropdown = ({
   onSelect,
@@ -15,8 +18,8 @@ const DistrictDropdown = ({
   // Fetch and set district data on component mount
   useEffect(() => {
     const districtNames = districtsData.features.map((feature) => ({
-      id: feature.id, // "id" is the district ID
-      name: feature.properties.name, // "name" is the district name
+      id: feature.properties.KGISDistri, // "id" is the district ID
+      name: feature.properties.KGISDist_1, // "name" is the district name
       coordinates: feature.geometry.coordinates, // Coordinates for the district
     }));
     setDistricts(districtNames);
@@ -87,7 +90,7 @@ const DistrictDropdown = ({
     }
 
     const selectedDistrict = districtsData.features.find(
-      (feature) => feature.id === selectedDistrictId
+      (feature) => feature.properties.KGISDistri === selectedDistrictId
     );
 
     if (selectedDistrict) {
@@ -100,7 +103,7 @@ const DistrictDropdown = ({
       
       // Filter taluks for the selected district and update the map
       const filteredTaluks = talukData.features.filter(
-        (feature) => feature.district_id === selectedDistrictId // Assuming taluks have "district_id" property
+        (feature) => feature.properties.KGISDistri=== selectedDistrictId // Assuming taluks have "district_id" property
       );
       setHighlightedTaluks(filteredTaluks); // Update the highlighted taluks
     } else {

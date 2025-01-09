@@ -6,16 +6,19 @@ import L from 'leaflet';
 import geodata1 from './india_district.json';           // contains all state borders
 import geodata2 from './State.json';               //Karnataka state border
 //import geodata3 from './District.json';            //District border
-import geodata4 from './Taluk.json';               //Taluk border
+//import geodata4 from './Taluk.json';               //Taluk border
 import styles from './my_styles.module.css';
 import fetchWeather from './weatherApi';  // Import the fetchWeather function
 import DistrictDropdown from './DistrictDropdown'; // Importing the DistrictDropdown component
-import districtsData from './District.json';  // Import the districts GeoJSON
+//import districtsData from './District.json';  // Import the districts GeoJSON
 import HeatMap from './heat_map'; // Import the HeatMap component
-import talukData from './Taluk.json'; // Taluk data
+//import talukData from './Taluk.json'; // Taluk data
 //import HeatMap1 from './heat_map1'; // Import the HeatMap component
 import geodata3 from './District_shp.json';            //District border conveted from shp to json file
+import geodata4 from './Taluk_shp.json';   
 
+import districtsData from './District_shp.json';  // Import the districts GeoJSON
+import talukData from './Taluk_shp.json'; // Taluk data
 
 
 // Fix for marker icons not appearing
@@ -112,9 +115,7 @@ const MyMap = () => {
 
   const [highlightedDistrict, setHighlightedDistrict] = useState(null); // Track highlighted district
   const [districts, setDistricts] = useState([]);
-  const [highlightedTaluks, setHighlightedTaluks] = useState([
-
-  ]); // New state to store highlighted taluks
+  const [highlightedTaluks, setHighlightedTaluks] = useState([]); // New state to store highlighted taluks
   
 
 
@@ -126,7 +127,7 @@ const MyMap = () => {
   const handleDistrictSelect = (districtId, coordinates) => {
     console.log('District selected:', districtId, coordinates);
     const selectedDistrict = districtsData.features.find(
-      (feature) => feature.id === districtId
+      (feature) => feature.properties.KGISDistri === districtId
     );
 
     if (selectedDistrict) {
@@ -138,7 +139,7 @@ const MyMap = () => {
 
   //  Now filter taluks based on the selected district ID
     const filteredTaluks = talukData.features.filter(
-      (feature) => feature.district_id ===districtId // Assuming taluk data has "district_id"
+      (feature) => feature.properties.KGISDistri ===districtId // Assuming taluk data has "district_id"
       
     );
     
@@ -226,7 +227,7 @@ const MapViewUpdater = () => {
 
 // GeoJSON style function to highlight the selected district
 const getDistrictStyle = (feature) => {
-  if (highlightedDistrict && feature.id === highlightedDistrict.id) {
+  if (selectedDistrictId && feature.properties.KGISDistri === selectedDistrictId) {
     return {
       fillColor: 'green', // Highlight color
       weight: 3, // Thicker border
@@ -248,7 +249,7 @@ const getDistrictStyle = (feature) => {
 
 const getTalukStyle = (feature) => {
   // Check if the current Taluk is the selected Taluk
-  if (highlightedTaluks.length > 0 && highlightedTaluks.find(taluk => taluk.id === feature.id)) {
+  if (highlightedTaluks.length > 0 && highlightedTaluks.find(taluk => taluk.properties.KGISDistri === feature.properties.KGISDistri)) {
     // Apply style to the selected Taluk
     return {
       fillColor: 'green', // Color for the selected Taluk
