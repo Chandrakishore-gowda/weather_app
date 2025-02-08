@@ -45,7 +45,7 @@ const Navbar = () => {
       <div className="links">
         <Link to="/MyMap">MAP</Link> {/* Use Link for navigation */}
         <Link to="/page1">Link 2</Link>  {/* Link to Page 2 */}
-        <Link to="">Link 3</Link>  {/* Link to Page 3 */}
+        <Link to="/page2">Link 3</Link>  {/* Link to Page 3 */}
       </div>
     </nav>
   );

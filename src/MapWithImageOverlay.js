@@ -1,5 +1,5 @@
 import React,{useEffect,useState}from 'react';
-import { MapContainer, TileLayer, Marker, Popup ,GeoJSON,useMap} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup ,ImageOverlay ,GeoJSON,useMap} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 //import geodata from './india_district_states.json';   //contains all state and district border
@@ -19,6 +19,8 @@ import geodata4 from './Taluk_shp.json';
 
 import districtsData from './District_shp.json';  // Import the districts GeoJSON
 import talukData from './Taluk_shp.json'; // Taluk data
+
+import myImage from './karnataka_temperature_heatmap_cartopy (1).png'; // Ensure this path is correct
 
 
 
@@ -122,6 +124,11 @@ const Map = () => {
   const [districts, setDistricts] = useState([]);
   const [highlightedTaluks, setHighlightedTaluks] = useState([]); // New state to store highlighted taluks
   
+
+  const bounds = [
+    [12.5, 74.0],  // Southwest corner (latitude, longitude)
+    [15.5, 78.0],  // Northeast corner (latitude, longitude)
+  ];
 
 
   useEffect(() => {
@@ -291,6 +298,8 @@ const getTalukStyle = (feature) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
+      {/* Image Overlay (the heatmap) */}
+      <ImageOverlay url={myImage} bounds={bounds} />
       {/* Display district boundaries */}
       <GeoJSON data={districtsData} style={getDistrictStyle} />
         {/* Display taluks if selected */}

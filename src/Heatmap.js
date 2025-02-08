@@ -1,30 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
+import { useMap } from 'react-leaflet';
 import heatmapData from './json_T95.json'; // Import your heatmap data directly
 
 const Heatmap = () => {
+  const map = useMap(); // Now correctly using useMap within MapContainer context
+
   const [plotData, setPlotData] = useState([]);
   const [layout, setLayout] = useState({});
 
   useEffect(() => {
+    if (!map) return; // Ensure map is loaded
+
     const latitudes = heatmapData.map((item) => item.latitude);
     const longitudes = heatmapData.map((item) => item.longitude);
     const temperatures = heatmapData.map((item) => item.t2m);
-
-    // Calculate the center of the map (average latitude and longitude)
-    const avgLat = latitudes.reduce((sum, lat) => sum + lat, 0) / latitudes.length;
-    const avgLon = longitudes.reduce((sum, lon) => sum + lon, 0) / longitudes.length;
-
-    // Calculate the bounds (min/max latitudes and longitudes) to adjust zoom level
-    const minLat = Math.min(...latitudes);
-    const maxLat = Math.max(...latitudes);
-    const minLon = Math.min(...longitudes);
-    const maxLon = Math.max(...longitudes);
-
-    // Adjust zoom based on the spread of the data
-    const latDiff = maxLat - minLat;
-    const lonDiff = maxLon - minLon;
-    const zoom = Math.max(2, Math.min(10, Math.log(1 / Math.max(latDiff, lonDiff)) * 3)); // Dynamic zoom
 
     // Create plotly data for the heatmap
     const newPlotData = [
@@ -46,7 +36,7 @@ const Heatmap = () => {
       },
     ];
 
-    // Set layout for Plotly map with dynamic zoom and centered map
+    // Set layout for Plotly map
     const newLayout = {
       geo: {
         projection: {
@@ -59,33 +49,23 @@ const Heatmap = () => {
       },
       mapbox: {
         style: 'open-street-map', // OpenStreetMap as the base layer
-        center: { lat: avgLat, lon: avgLon },
-        zoom: zoom, // Dynamically adjusted zoom
-        zoomControl: true, // Enable zoom control buttons
-        scrollwheelzoom: true,
-        padding: { t: 50, b: 50, l: 50, r: 50 }, // Adds padding for better view
+        center: { lat: latitudes.reduce((sum, lat) => sum + lat, 0) / latitudes.length, lon: longitudes.reduce((sum, lon) => sum + lon, 0) / longitudes.length },
+        zoom: 3, // Adjust this zoom level based on the dataset's geographical spread
       },
       title: 'Temperature Heatmap',
     };
 
     setPlotData(newPlotData);
     setLayout(newLayout);
-  }, []);
+  }, [map]);
 
   return (
-    <div style={{ width: '100%', height: '600px' }}>
+    <div>
       {/* Use Plotly component for rendering the heatmap */}
       <Plot
         data={plotData}
         layout={layout}
-        config={{
-          responsive: true,
-          displayModeBar: true,    // Ensure the mode bar is always visible
-          displaylogo: false,      // Hide the Plotly logo on the mode bar
-          modeBarButtonsToRemove: [], // Keep all default buttons
-          showAxisDragHandles: true, // Prevents hiding mode bar when zooming or panning
-          showTips: true,          // Enable tooltips for the mode bar buttons
-        }}
+        config={{ responsive: true }}
         useResizeHandler
       />
     </div>
